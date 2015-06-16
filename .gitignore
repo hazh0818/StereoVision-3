@@ -1,11 +1,17 @@
-# Build and Release Folders
-bin/
-bin-debug/
-bin-release/
+# Temp-Text edit files
+*~
 
-# Other files and folders
-.settings/
-
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# all documentation tex files except the .pdf result
+*.tex
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.dvi
+*.log
+*.out
+*.tex.backup
+*.run.xml
+*.synctex.gz
+*.toc
+*.bib
