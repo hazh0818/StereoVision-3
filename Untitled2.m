@@ -13,7 +13,7 @@ function success = Untitled2()
     
     success = true;
     
-    %rest();
+    %rest(stereoParams);
 end
 
 
@@ -62,38 +62,32 @@ end
 %                         auf denen �berall das Kalibrierungsmuster zu 
 %                         sehen sein sollte.
 %       Achtung:        - Bider sollten in PNG - Format vorliegen.
-function stereoParams = calibration(numImgPr, sizeSqares)
+function stereoParams = calibration(numImgPr, sizeSquares)
     
 
     %
-    % Schritt 1:    Erstellen eines Arrays, welches die Pfade enthält.
-    %               Außerdem: Einlesen der Bilder.
+    % Schritt 1:    Einlesen der Bilder aus angegebenem Pfad.
     %
     rootDir = fullfile('/homes', 'jhuelsmann', 'Desktop', 'bv_files', 'init');
 
-    testImg1 = cell(numImgPr, numImgPr);
-    testImg2 = cell(numImgPr, numImgPr);
     images1 = cast([], 'uint8');
     images2 = cast([], 'uint8');
-    
     for i = 1:numImgPr
-        testImg1{i} = fullfile(rootDir, sprintf('l%d.png', i));
-        testImg2{i} = fullfile(rootDir, sprintf('r%d.png', i));
-
-
-        im = imread(testImg1{i});
+        im = imread(fullfile(rootDir, sprintf('l%d.png', i)));
         images1(:, :, :, i) = im;
 
-        im = imread(testImg2{i});
+        im = imread(fullfile(rootDir, sprintf('r%d.png', i)));
         images2(:, :, :, i) = im;
     end
     
     % Anzeigen des Bildes incusive Schachbrett.
     [imagePoints, boardSize] = detectCheckerboardPoints(images1, images2);
     figure;
+    % Bild
     imshow(images1(:,:,:,1), 'InitialMagnification', 50);
     hold on;
-    plot(imagePoints(:, 1, 1, 1), imagePoints(:, 2, 1, 1), '*-g');
+    % Schachbrett einzeichnen.
+    plot(imagePoints(:, 1, 1, 1), imagePoints(:, 2, 1, 1), '*xr');
     title('Schachbrett-Detektion');
 
 
