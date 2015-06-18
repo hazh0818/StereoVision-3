@@ -7,7 +7,7 @@
 function success = Untitled2()
 
     % calibration with 10 different image pairs
-    calibration(1);
+    calibration(1, 100);
     
     
     
@@ -62,78 +62,51 @@ end
 %                         auf denen �berall das Kalibrierungsmuster zu 
 %                         sehen sein sollte.
 %       Achtung:        - Bider sollten in PNG - Format vorliegen.
-function calibration(numImgPr)
+function stereoParams = calibration(numImgPr, sizeSqares)
     
 
     %
-    % Schritt 1:    Erstellen eines Arrays, welches die Pfade enth�lt.
+    % Schritt 1:    Erstellen eines Arrays, welches die Pfade enthält.
+    %               Außerdem: Einlesen der Bilder.
     %
     rootDir = fullfile('/homes', 'jhuelsmann', 'Desktop', 'bv_files', 'init');
 
     testImg1 = cell(numImgPr, numImgPr);
     testImg2 = cell(numImgPr, numImgPr);
+    images1 = cast([], 'uint8');
+    images2 = cast([], 'uint8');
     
     for i = 1:numImgPr
         testImg1{i} = fullfile(rootDir, sprintf('l%d.png', i));
         testImg2{i} = fullfile(rootDir, sprintf('r%d.png', i));
+
+
+        im = imread(testImg1{i});
+        images1(:, :, :, i) = im;
+
+        im = imread(testImg2{i});
+        images2(:, :, :, i) = im;
     end
     
-    disp(testImg1{1});
-    
- imageFiles1 = testImg1;
- imageFiles2 = testImg2;
- 
- 
- images1 = cast([], 'uint8');
-images2 = cast([], 'uint8');
-for i = 1:numel(imageFiles1)
-    im = imread(imageFiles1{i});
-    im(3:700, 1247:end, :) = 0;
-    images1(:, :, :, i) = im;
-
-    im = imread(imageFiles2{i});
-    im(1:700, 1198:end, :) = 0;
-    images2(:, :, :, i) = im;
-end
- 
- 
- [imagePoints, boardSize] = detectCheckerboardPoints(images1, images2);
-
-    % Display one masked image with the correctly detected checkerboard
+    % Anzeigen des Bildes incusive Schachbrett.
+    [imagePoints, boardSize] = detectCheckerboardPoints(images1, images2);
     figure;
     imshow(images1(:,:,:,1), 'InitialMagnification', 50);
     hold on;
     plot(imagePoints(:, 1, 1, 1), imagePoints(:, 2, 1, 1), '*-g');
-    title('Successful Checkerboard Detection');
+    title('Schachbrett-Detektion');
 
 
+    % Kalibrierung
+    % Generate world coordinates of the checkerboard points.
+    worldPoints = generateCheckerboardPoints(boardSize, sizeSquares);
 
+    % Compute the stereo camera parameters.
+    stereoParams = estimateCameraParameters(imagePoints, worldPoints);
 
-
-
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-
-
-
+    % Evaluate calibration accuracy.
+    figure;
+    showReprojectionErrors(stereoParams);
 end
 
 
