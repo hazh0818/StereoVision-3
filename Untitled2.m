@@ -7,7 +7,7 @@
 function success = Untitled2()
 
     % calibration with 10 different image pairs
-    calibration(1, 100);
+    stereoParams = calibration(1, 107);
     
     
     
@@ -111,85 +111,7 @@ end
 
 
 
-function rest(imageFiles1, imageFiles2, imagePoints)
-
-    
-
-
-    images1 = cast([], 'uint8');
-    images2 = cast([], 'uint8');
-    for i = 1:numel(imageFiles1)
-        im = imread(imageFiles1{i});
-        im(3:700, 1247:end, :) = 0;
-        images1(:, :, :, i) = im;
-
-        im = imread(imageFiles2{i});
-        im(1:700, 1198:end, :) = 0;
-        images2(:, :, :, i) = im;
-    end
-
-   
-
-
-
-
-
-
-
-
-
-
-
-    % Generate world coordinates of the checkerboard points.
-    squareSize = 108; % millimeters
-    worldPoints = generateCheckerboardPoints(boardSize, squareSize);
-
-    % Compute the stereo camera parameters.
-    stereoParams = estimateCameraParameters(imagePoints, worldPoints);
-
-    % Evaluate calibration accuracy.
-    figure;
-    showReprojectionErrors(stereoParams);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    % Try to detect the checkerboard
-    im = imread(imageFiles1{1});
-    imagePoints = detectCheckerboardPoints(im);
-
-    % Display the image with the incorrectly detected checkerboard
-    figure;
-    imshow(im, 'InitialMagnification', 50);
-    hold on;
-    plot(imagePoints(:, 1), imagePoints(:, 2), '*-g');
-    title('Failed Checkerboard Detection');
-
-
-
+function rest(stereoParams)
 
     I1 = imread('C:\Users\juliu_000\Desktop\Stuff\my_images\Camera Roll\l.jpg');
     I2 = imread('C:\Users\juliu_000\Desktop\Stuff\my_images\Camera Roll\r.jpg');
@@ -204,6 +126,18 @@ function rest(imageFiles1, imageFiles2, imagePoints)
     figure;
     imshow(stereoAnaglyph(J1, J2), 'Initial Magnification', 50);
     title('After Rectification');
+
+
+   % Disparitätenkarte erstellen.
+    disparityMap = disparity(rgb2gray(J1), rgb2gray(J2));
+    figure;
+    imshow(disparityMap, [0, 64], 'InitialMagnification', 50);
+    colormap('jet');
+    colorbar;
+    title('Disparity Map');
+
+
+
 
 end
 
