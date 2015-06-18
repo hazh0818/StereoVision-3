@@ -7,14 +7,14 @@
 function success = Untitled2()
 
     % calibration with 10 different image pairs
-    stereoParams = calibration(1, 107);
+    stereoParams = calibration(1, 56);
     
     
     
     success = true;
     
-    disparityMap = disparities(stereoParams);
-    plotThreeD(stereoParams, disparityMap);
+    % disparityMap = disparities(stereoParams);
+    % plotThreeD(stereoParams, disparityMap);
 end
 
 
