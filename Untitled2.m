@@ -13,7 +13,8 @@ function success = Untitled2()
     
     success = true;
     
-    %rest(stereoParams);
+    disparityMap = disparities(stereoParams);
+    plotThreeD(stereoParams, disparityMap);
 end
 
 
@@ -105,7 +106,7 @@ end
 
 
 
-function rest(stereoParams)
+function disparityMap = disparities(stereoParams)
 
     I1 = imread('C:\Users\juliu_000\Desktop\Stuff\my_images\Camera Roll\l.jpg');
     I2 = imread('C:\Users\juliu_000\Desktop\Stuff\my_images\Camera Roll\r.jpg');
@@ -129,14 +130,32 @@ function rest(stereoParams)
     colormap('jet');
     colorbar;
     title('Disparity Map');
-
-
-
-
 end
 
 
+function plotThreeD (stereoParams, disparityMap)
 
+    point3D = reconstructScene(disparityMap, stereoParams);
+
+    % Convert from millimeters to meters.
+    point3D = point3D / 1000;
+
+
+	% Plot points between 3 and 7 meters away from the camera.
+	z = point3D(:, :, 3);
+	maxZ = 7;
+	minZ = 3;
+	zdisp = z;
+	zdisp(z < minZ | z > maxZ) = NaN;
+	point3Ddisp = point3D;
+	point3Ddisp(:,:,3) = zdisp;
+	showPointCloud(point3Ddisp, J1, 'VerticalAxis', 'Y',...
+	    'VerticalAxisDir', 'Down' );
+	xlabel('X');
+	ylabel('Y');
+	zlabel('Z');
+
+end
 
 
 
