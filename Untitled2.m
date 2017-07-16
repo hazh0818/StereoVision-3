@@ -7,7 +7,7 @@
 function success = Untitled2()
 
     % calibration with 10 different image pairs
-    stereoParams = calibration(1, 56);
+    stereoParams = calibration(4, 56);
     
     
     
@@ -88,7 +88,7 @@ function stereoParams = calibration(numImgPr, sizeSquares)
     imshow(images1(:,:,:,1), 'InitialMagnification', 50);
     hold on;
     % Schachbrett einzeichnen.
-    plot(imagePoints(:, 1, 1, 1), imagePoints(:, 2, 1, 1), '*xr');
+    plot(imagePoints(:, 1, 1, 1), imagePoints(:, 2, 1, 1), '*-g');
     title('Schachbrett-Detektion');
 
 
